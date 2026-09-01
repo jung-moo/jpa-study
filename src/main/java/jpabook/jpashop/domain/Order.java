@@ -1,7 +1,9 @@
 package jpabook.jpashop.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,8 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name="orders")
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id @GeneratedValue
@@ -47,6 +49,13 @@ public class Order {
         this.delivery = delivery;
         delivery.setOrder(this);
     }
+
+    //생성 메서드로만 객체 생성하도록 한다.
+    //@NoArgsConstructor(access = AccessLevel.PROTECTED) 로 대체 가능
+    /*
+    protected Order() {
+    }
+    */
 
     //==생성 메서드==//
     public static Order createOrder(Member member, Delivery delivery,
