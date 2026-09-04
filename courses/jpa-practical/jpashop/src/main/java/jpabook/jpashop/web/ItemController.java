@@ -70,6 +70,10 @@ public class ItemController {
 
     }
 
+    /**
+     * 상품 수정, 권장하지 않는 코드
+     */
+    /*
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@ModelAttribute("form") BookForm form) {
 
@@ -84,6 +88,16 @@ public class ItemController {
         itemService.saveItem(book);
         return "redirect:/items";
 
+    }
+    */
+
+    /**
+     * 상품 수정, 권장 코드
+     */
+    @PostMapping(value = "/items/{itemId}/edit")
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
+        return "redirect:/items";
     }
 
 }
