@@ -1,4 +1,4 @@
-package study.data_jpa.entity;
+package study.datajpa.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
