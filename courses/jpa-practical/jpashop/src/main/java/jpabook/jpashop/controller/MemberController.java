@@ -1,4 +1,4 @@
-package jpabook.jpashop.web;
+package jpabook.jpashop.controller;
 
 import jakarta.validation.Valid;
 import jpabook.jpashop.domain.Address;
