@@ -1,11 +1,14 @@
 package jpabook.jpashop.api;
 
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +43,37 @@ public class MemberApiController {
     memberService.update(id, request.getName());  // 변경감지 사용
     Member findMember = memberService.findOne(id);
     return new UpdateMemberResponse(findMember.getId(), findMember.getName());
+  }
+
+  @GetMapping("/api/v1/members")
+  public List<Member> membersV1() {
+    return memberService.findMembers();
+  }
+
+  @GetMapping("/api/v2/members")
+  public Result membersV2() {
+
+    List<Member> findMembers = memberService.findMembers();
+    //엔티티 -> DTO 변환
+    List<MemberDto> collect = findMembers.stream()
+        .map(m -> new MemberDto(m.getName()))
+        .collect(Collectors.toList());
+
+    return new Result(collect);
+    //return new Result(collect, collect.size());
+  }
+
+  @Data
+  @AllArgsConstructor
+  static class Result<T> {
+    private T data;
+    //private int count;  // 이와같이 확장성 증가
+  }
+
+  @Data
+  @AllArgsConstructor
+  static class MemberDto {
+    private String name;
   }
 
   @Data
