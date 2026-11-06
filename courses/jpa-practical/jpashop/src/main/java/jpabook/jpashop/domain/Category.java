@@ -19,6 +19,7 @@ public class Category {
     private String name;
 
     @ManyToMany  //실무에선 거의 사용하지 않는다. 학습용
+    // 다대다 연관 관계의 주인으로 설정한다.
     @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))

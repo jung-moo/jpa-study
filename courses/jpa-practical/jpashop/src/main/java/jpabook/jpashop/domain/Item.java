@@ -23,6 +23,7 @@ public abstract class Item {
     private int price;
     private int stockQuantity;
 
+    // 반대편을 다대다 연관 관계의 주인으로 설정한다.
     @ManyToMany(mappedBy = "items")  //실무에선 거의 사용하지 않는다. 학습용
     private List<Category> categories = new ArrayList<>();
 

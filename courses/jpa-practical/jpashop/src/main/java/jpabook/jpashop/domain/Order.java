@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="orders")
+@Table(name="orders")  // ORDER 로는 테이블을 만들 수 없어 테이블명은 ORDERS 로 지정해준다.
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
@@ -20,13 +20,16 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
+    // 연관 관계의 주인으로 설정한다.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id")  // Order 가 갖고 있는 FK
     private Member member;
 
+    // cascade - orderItem 들을 만들고 order 에 넣은 후 orderItem 들을 각각 persist 하지 않고 order 만 해도 적용된다.
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    // Delivery 보다는 Order 에 엑세스할 일이 많기 때문에 Order 를 연관 관계의 주인으로 한다. (강제는 아니다.)
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
@@ -34,7 +37,7 @@ public class Order {
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;  //주문상태 [ORDER, CANCEL]
+    private OrderStatus status;  // 주문상태 [ORDER, CANCEL]
 
     //==연관관계 메서드==//
     public void setMember(Member member) {
