@@ -39,6 +39,7 @@ public class OrderService {
         Order order = Order.createOrder(member, delivery, orderItem);
 
         //주문 저장
+        //cascade = CascadeType.ALL 설정으로 인해 delivery, orderItem 은 따로 저장해주지 않아도 된다.
         orderRepository.save(order);
 
         return order.getId();
