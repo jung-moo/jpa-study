@@ -1,6 +1,6 @@
-spring:
+spring:  #스프링부트가 기본적으로 아래의 설정으로 실행한다.
 #  datasource:
-#    url: jdbc:h2:mem:testdb
+#    url: jdbc:h2:mem:testdb  #메모리 모드로 동작한다.
 #    username: sa
 #    password:
 #    driver-class-name: org.h2.Driver
