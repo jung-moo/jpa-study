@@ -1,12 +1,15 @@
 package jpabook.jpashop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -23,7 +26,7 @@ public class Member {
     private Address address;
 
     @OneToMany(mappedBy = "member")  //Order 의 member 를 연관 관계의 주인으로 한다.
-    @JsonIgnore
+    //@JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
 }

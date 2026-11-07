@@ -21,13 +21,16 @@ public class MemberApiController {
 
   private final MemberService memberService;
 
-  // RequestBody: json 으로 들어온 데이터를 Member 에 맵핑해준다. (json 외 다른 형식으로도 스프링에서 변경 가능)
+  //RequestBody: json 으로 들어온 데이터를 Member 에 맵핑해준다. (json 외 다른 형식으로도 스프링에서 변경 가능)
+  //엔티티를 외부로 노출하므로 권장하지 않는다.
   @PostMapping("/api/v1/members")
   public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {
     Long id = memberService.join(member);
     return new CreateMemberResponse(id);
   }
 
+  //실무에서 권장하는 방식
+  //엔티티와 api spec 을 분리한다.
   @PostMapping("/api/v2/members")
   public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
 
@@ -35,16 +38,24 @@ public class MemberApiController {
     member.setName(request.getName());
 
     Long id = memberService.join(member);
+
     return new CreateMemberResponse(id);
+
   }
 
+  //v1 은 다루지 않는다.
   @PatchMapping("/api/v2/members/{id}")
   public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id, @RequestBody @Valid UpdateMemberRequest request) {
-    memberService.update(id, request.getName());  // 변경감지 사용
+    memberService.update(id, request.getName());  //변경 감지 사용
+    //update 에서 변경된 회원 정보를 반환하지 않고 다시 조회해온다. - 커맨드와 쿼리를 분리한다.
+    //update 이후 id 정도 반환해주는건 좋다.
     Member findMember = memberService.findOne(id);
     return new UpdateMemberResponse(findMember.getId(), findMember.getName());
   }
 
+  //엔티티를 외부에 노출한다.
+  //member 정보만 가져오고 싶어도 member 의 주문 정보도 다 가져온다.
+  //이 방식은 실무에서 권장하지 않는다.
   @GetMapping("/api/v1/members")
   public List<Member> membersV1() {
     return memberService.findMembers();
@@ -59,15 +70,17 @@ public class MemberApiController {
         .map(m -> new MemberDto(m.getName()))
         .collect(Collectors.toList());
 
+    //스펙 확장을 가능하게 한다.
     return new Result(collect);
     //return new Result(collect, collect.size());
+
   }
 
   @Data
   @AllArgsConstructor
   static class Result<T> {
     private T data;
-    //private int count;  // 이와같이 확장성 증가
+    //private int count;  //이와 같이 확장성 증가
   }
 
   @Data
@@ -84,7 +97,6 @@ public class MemberApiController {
   @Data
   static class CreateMemberResponse {
     private Long id;
-
     public CreateMemberResponse(Long id) {
       this.id = id;
     }

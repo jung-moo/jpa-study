@@ -21,10 +21,6 @@ public class MemberService {
     //생성자 주입 방식을 사용한다.
     private final MemberRepository memberRepository;
 
-    /**
-     *
-     회원가입
-     */
     @Transactional  //class 에 붙은 @Transactional 보다 우선권을 갖는다.
     public Long join(Member member) {
         validateDuplicateMember(member);
@@ -40,18 +36,10 @@ public class MemberService {
         }
     }
 
-    /**
-     *
-     전체 회원 조회
-     */
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
-    /**
-     *
-     회원 단건 조회
-     */
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }

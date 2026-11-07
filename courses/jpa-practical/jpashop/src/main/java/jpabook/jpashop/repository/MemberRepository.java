@@ -28,7 +28,7 @@ public class MemberRepository {
     }
 
     public List<Member> findAll() {
-        // JPQL - 테이블이 아닌 객체를 대상으로 쿼리를 실행한다.
+        //JPQL - 테이블이 아닌 객체를 대상으로 쿼리를 실행한다.
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
     }
