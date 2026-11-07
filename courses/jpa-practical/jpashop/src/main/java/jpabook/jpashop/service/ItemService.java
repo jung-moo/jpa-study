@@ -20,11 +20,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    /**
-     * 영속성 컨텍스트가 자동 변경
-     */
+    /** 영속성 컨텍스트가 자동 변경 */
     @Transactional
     public void updateItem(Long id, String name, int price, int stockQuantity) {
+        //실무에서는 setter 를 바로 사용하는게 아니라 의미 있는 메서드를 사용해야한다.
         Item item = itemRepository.findOne(id);
         item.setName(name);
         item.setPrice(price);

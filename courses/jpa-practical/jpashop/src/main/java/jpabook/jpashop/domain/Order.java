@@ -80,9 +80,12 @@ public class Order {
         if (delivery.getStatus() == DeliveryStatus.COMP) {
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
         }
-        this.setStatus(OrderStatus.CANCEL);  //주분상태 변경  //강조를 위해 this 사용
+        //강조를 위해 this 사용
+        //JPA 에게 별다른 요청을 하지 않고 이렇게만 해도 변경이 적용된다.
+        //커밋 시점(flush 시점)에 DB update 된다. - dirty checking 이용
+        this.setStatus(OrderStatus.CANCEL);
         for(OrderItem orderItem : orderItems) {
-            orderItem.cancel();  //재고 변경
+            orderItem.cancel();
         }
     }
 

@@ -55,6 +55,7 @@ public class ItemController {
     @GetMapping(value = "/items/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model model) {
 
+        //캐스팅 하는게 좋지는 않지만 예제 단순화를 위해 사용한다.
         Book item = (Book) itemService.findOne(itemId);
 
         BookForm form = new BookForm();
@@ -70,13 +71,17 @@ public class ItemController {
 
     }
 
-    /**
-     * 상품 수정, 권장하지 않는 코드
-     */
-    /*
+    // === 준영속 엔티티 수정하기 ===
+    //방식1. 병합(merge) 사용 (병합은 준영속 상태의 엔티티를 영속 상태로 변경할 때 사용하는 기능이다.)
+    //방식2. 변경 감지 기능 사용
+
+    /** 상품 수정, 권장하지 않는 코드 */
+    //방식1. 병합(merge) 을 사용한 방식
+    //필드를 선택적으로 변경할 수 없기 때문에 값이 없으면 null 로 업데이트되는 위험이 있다.
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@ModelAttribute("form") BookForm form) {
 
+        //임의로 만들어낸 엔티티도 기존 식별자(form.getId())를 가지고 있으면 준영속 엔티티로 볼 수 있다.
         Book book = new Book();
         book.setId(form.getId());
         book.setName(form.getName());
@@ -89,11 +94,9 @@ public class ItemController {
         return "redirect:/items";
 
     }
-    */
 
-    /**
-     * 상품 수정, 권장 코드
-     */
+    /** 상품 수정, 권장 코드 */
+    //방식2. 변경 감지 기능 사용
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
         itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
