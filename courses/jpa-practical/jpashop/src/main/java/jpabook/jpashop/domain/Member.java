@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ public class Member {
     private Address address;
 
     @OneToMany(mappedBy = "member")  //Order 의 member 를 연관 관계의 주인으로 한다.
-    //@JsonIgnore
+    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
 }

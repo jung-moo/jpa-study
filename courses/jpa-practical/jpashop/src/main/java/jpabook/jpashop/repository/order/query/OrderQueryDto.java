@@ -35,4 +35,5 @@ public class OrderQueryDto {
         this.address = address;
         this.orderItems = orderItems;
     }
+
 }

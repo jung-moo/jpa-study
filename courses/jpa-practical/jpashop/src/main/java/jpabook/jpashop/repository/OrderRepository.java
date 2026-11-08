@@ -132,12 +132,19 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithItem() {
+        //JPA 에서 같은 id 값이면 중복 대상 하나를 제거해준다.
+        //실제 DB 에서도 disinct 가 붙어서 실행되나, 값이 완전히 일치하지 않는 경우 중복 제거되지 않는다.
         return em.createQuery(
                 "select distinct o from Order o" +
                     " join fetch o.member m" +
                     " join fetch o.delivery d" +
                     " join fetch o.orderItems oi" +
                     " join fetch oi.item i", Order.class)
+            /*
+            이 상태에서 페이징을 하게 되면 모든 데이터를 DB 에서 읽어오고 메모리에서 페이징을 한다. (위험)
+            .getFirstResult(1)
+            .setMaxResults(100)
+            */
             .getResultList();
     }
 

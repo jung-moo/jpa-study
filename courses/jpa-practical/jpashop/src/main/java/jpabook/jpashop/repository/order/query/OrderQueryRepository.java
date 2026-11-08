@@ -18,16 +18,22 @@ public class OrderQueryRepository {
      * Query: 루트 1번, 컬렉션 N 번
      * 단건 조회에서 많이 사용하는 방식
      */
+    //조인하면 row 가 증가하기 때문에 별도로 조회해 채워넣는다.
+    //N+1 문제 발생한다.
+    //Order 마다 OrderItem 가져오는 쿼리 추가 실행된다.
     public List<OrderQueryDto> findOrderQueryDtos() {
+
         //루트 조회(toOne 코드를 모두 한번에 조회)
         List<OrderQueryDto> result = findOrders();
 
-        //루프를 돌면서 컬렉션 추가(추가 쿼리 실행)
+        //루프를 돌면서 컬렉션 추가 (추가 쿼리 실행)
         result.forEach(o -> {
             List<OrderItemQueryDto> orderItems = findOrderItems(o.getOrderId());
             o.setOrderItems(orderItems);
         });
+
         return result;
+
     }
 
     /**
@@ -36,12 +42,14 @@ public class OrderQueryRepository {
      * 데이터를 한꺼번에 처리할 때 많이 사용하는 방식
      *
      */
+    //N+1 문제에 대해 최적화한다.
     public List<OrderQueryDto> findAllByDto_optimization() {
 
         //루트 조회(toOne 코드를 모두 한번에 조회)
         List<OrderQueryDto> result = findOrders();
 
         //orderItem 컬렉션을 MAP 한방에 조회
+        //위에 findOrders() 를 통해 얻은 Order 들에서 order_id 를 추출해 findOrderItemMap() 을 실행한다.
         Map<Long, List<OrderItemQueryDto>> orderItemMap = findOrderItemMap(toOrderIds(result));
 
         //루프를 돌면서 컬렉션 추가(추가 쿼리 실행X)
@@ -53,6 +61,7 @@ public class OrderQueryRepository {
     /**
      * 1:N 관계(컬렉션)를 제외한 나머지를 한번에 조회
      */
+    //조인 시 row 증가하지 않는 대상들 따로 가져온다.
     private List<OrderQueryDto> findOrders() {
         return em.createQuery(
                 "select new jpabook.jpashop.repository.order.query.OrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
@@ -65,6 +74,8 @@ public class OrderQueryRepository {
     /**
      * 1:N 관계인 orderItems 조회
      */
+    //조인 시에는 row 가 증가하기 때문에 조인하지 않고 별도로 가져온다
+    //Order 마다 OrderItem 을 가져오기 때문에 N+1 문제 발생한다.
     private List<OrderItemQueryDto> findOrderItems(Long orderId) {
         return em.createQuery(
                 "select new jpabook.jpashop.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)" +
@@ -75,12 +86,8 @@ public class OrderQueryRepository {
             .getResultList();
     }
 
-    private List<Long> toOrderIds(List<OrderQueryDto> result) {
-        return result.stream()
-            .map(o -> o.getOrderId())
-            .collect(Collectors.toList());
-    }
-
+    //Order 마다 OrderItem 을 가져옴으로써 발생하는 N+1 문제를 해결하기 위해 in 절로 가져오도록 한다.
+    //Order 개수만큼 실행되던 쿼리가 한 번 실행된다.
     private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
         List<OrderItemQueryDto> orderItems = em.createQuery(
                 "select new jpabook.jpashop.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)" +
@@ -90,8 +97,16 @@ public class OrderQueryRepository {
             .setParameter("orderIds", orderIds)
             .getResultList();
 
+        //Map 으로 변환한다.
         return orderItems.stream()
             .collect(Collectors.groupingBy(OrderItemQueryDto::getOrderId));
+    }
+
+    //Order 들에서 order_id 추출한다. (OrderItem 가져오는 in 절에 넣는다.)
+    private List<Long> toOrderIds(List<OrderQueryDto> result) {
+        return result.stream()
+            .map(o -> o.getOrderId())
+            .collect(Collectors.toList());
     }
 
     public List<OrderFlatDto> findAllByDto_flat() {
