@@ -47,6 +47,10 @@ public class OrderRepository {
     //querydsl 을 대안으로 한다.
     public List<Order> findAllByString(OrderSearch orderSearch) {
 
+        //@메모:
+        //Order 엔티티에 member 연관관계가 매핑되어 있으므로 JOIN 을 명시하지 않아도 접근할 수 있다.
+        //이 JOIN 은 Member 를 반드시 함께 가져오기 위한 것이 아니라, 조회 대상을 조인 조건에 맞게 제한하거나 Member 의 필드로 검색하기 위한 것이다.
+        //ex. select o from Order o join o.member m where m.name = :name
         String jpql = "select o From Order o join o.member m";
 
         boolean isFirstCondition = true;
