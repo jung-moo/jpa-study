@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter  //실무에서는 사용하지 않는다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"id", "username", "age"})
+@ToString(of = {"id", "username", "age"})  //team 은 제외한다.
 public class Member extends BaseEntity {
 
     @Id @GeneratedValue
@@ -37,6 +38,7 @@ public class Member extends BaseEntity {
         }
     }
 
+    //연관관계 메서드
     public void changeTeam(Team team) {
         this.team = team;
         team.getMembers().add(this);
