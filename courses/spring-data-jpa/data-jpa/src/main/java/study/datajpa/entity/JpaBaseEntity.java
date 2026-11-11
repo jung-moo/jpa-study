@@ -7,6 +7,8 @@ import jakarta.persistence.PreUpdate;
 
 import java.time.LocalDateTime;
 
+//JPA 가 엔티티로 인식하지 않는다.
+//공통 필드 재사용 목적으로 사용한다.
 @MappedSuperclass
 public class JpaBaseEntity {
 

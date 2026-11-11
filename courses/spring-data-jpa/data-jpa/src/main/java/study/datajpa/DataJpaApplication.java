@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import java.util.Optional;
 import java.util.UUID;
 
+//@EnableJpaAuditing(modifyOnCreate = false)
+//위와 같이 하면 업데이트 일자를 null 로 할 수 있으나 실무에서는 생성 일자를 넣어주는걸 권장한다.
 @EnableJpaAuditing
 @SpringBootApplication
 public class DataJpaApplication {

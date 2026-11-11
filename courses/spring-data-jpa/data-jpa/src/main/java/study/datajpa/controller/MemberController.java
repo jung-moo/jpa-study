@@ -17,6 +17,9 @@ public class MemberController {
 
     private final MemberRepository memberRepository;
 
+    //복잡한 로직에서는 사용하기 어려워 실무에서 많이 사용되지는 않는다. 간단한 곳에서만 사용된다.
+    //Long id 가 아닌 Member member 로 받을 수 있다.
+    //이 엔티티는 조회용으로만 사용해야한다.
     @GetMapping("/members/{id}")
     public String findMember(@PathVariable("id") Member member) {
         return member.getUsername();
