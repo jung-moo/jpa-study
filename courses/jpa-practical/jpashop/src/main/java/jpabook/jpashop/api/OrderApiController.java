@@ -119,7 +119,9 @@ public class OrderApiController {
         @RequestParam(value = "offset", defaultValue = "0") int offset,
         @RequestParam(value = "limit", defaultValue = "100") int limit) {
 
+        //페이징은 XtoOne 을 대상으로 진행되기 때문에 중복 데이터는 발생하지 않는다.
         List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+
         List<OrderDto> result = orders.stream()
             .map(o -> new OrderDto(o))
             .collect(toList());
