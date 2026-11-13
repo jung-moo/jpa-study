@@ -646,6 +646,7 @@ public class QuerydslBasicTest {
         .fetch();
   }
 
+  //Builder 보다 Where 절 파라미터를 더 많이 사용한다.
   @Test
   public void 동적쿼리_WhereParam() throws Exception {
     String usernameParam = "member1";
